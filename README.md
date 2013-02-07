@@ -6,6 +6,7 @@ Lightweight utilities class for Date manipulations
 
 dummy code for tests
 
+
   function dateValidate(y,m,d,h,n,s) {
     h=h||0;n=n||0;s=s||0; 
     console.log(new Date(y, m-1, d, h,n,s).toString());

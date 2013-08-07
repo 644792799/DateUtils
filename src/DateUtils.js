@@ -18,7 +18,8 @@
             "frhms": "dd-mm-yyyy hh:nn:ss",
             "enhms": "mm-dd-yyyy hh:nn:ss"
         },
-
+        shortcutsRe = /([ymdhns])/gi,
+        shortcutsRe2 = /([ymdhns]+)/gi,
         defaultMask = "fr";
 
     DateUtils = {
@@ -27,6 +28,19 @@
             return _objectToDate(obj);
         },
 
+        strToObj: function (str, mask) {
+            return _strToObject(str, mask);
+        },
+
+        dateToStr: function (date, mask) {
+            return mask.toLowerCase()
+                .replace(/y+/g, _zeroFill(date.getFullYear()))
+                .replace(/m+/g, _zeroFill(date.getMonth() - 1))
+                .replace(/d+/g, _zeroFill(date.getDate()))
+                .replace(/h+/g, _zeroFill(date.getHours()))
+                .replace(/n+/g, _zeroFill(date.getMinutes()))
+                .replace(/s+/g, _zeroFill(date.getSeconds()));
+        },
         validate: function (y, m, d, h, n, s) {
             h = h || 0;
             n = n || 0;
@@ -37,9 +51,7 @@
         },
 
         validateFromMask: function (str, mask) {
-            mask = masks[mask] || mask;
-            var dateRegExp = new RegExp(mask.replace(/[ymdhns]/gi, '\\d').replace(/\//g, '\\/'));
-            if (!dateRegExp.test(str)) return false;
+            mask = _getMask(mask);
             var o = _strToObject(str, mask);
             return this.validate(o.y, o.m, o.d, o.h, o.n, o.s);
         },
@@ -48,26 +60,29 @@
             defaultMask = masks[mask] || mask;
         },
 
+        getDefaultMask: function () {
+            return masks[defaultMask] || defaultMask;
+        },
+
+        getMask: function (mask) {
+            return _getMask(mask);
+        },
+
         setMask: function (key, mask) {
             masks[key] = mask;
         },
 
-        getMask: function (key) {
-            return masks[key];
-        },
-
-        setMasks: function (maps) {
-            for (var i in maps) {
-                if (maps.hasOwnProperty(i)) {
-                    masks[i] = maps[i];
-                }
-            }
-        },
-
         getMasks: function () {
             return masks;
-        }
+        },
 
+        setMasks: function (masksSet) {
+            for (var i in masksSet) {
+                if (masksSet.hasOwnProperty(i)) {
+                    masks[i] = masksSet[i];
+                }
+            }
+        }
     };
 
 
@@ -76,17 +91,20 @@
         },
 
         _strToObject = function (str, mask) {
-            var dateArr = str.split(/\D+/),
-                arr = _getMask(mask).match(/([ymdhns]+)/gi),
-                values = {};
-            for (var i = 0; i < arr.length; i++) {
-                values[arr[i].charAt(0).toLowerCase()] = dateArr[i];
-            }
+            var values = {};
+            _getMask(mask).replace(shortcutsRe, function (a, b, index) {
+                values[a] = (values[a] || "") + str.charAt(index);
+            });
             return values;
         },
 
         _objectToDate = function (o) {
             return _dateCreate(o.y || 0, o.m || 0, o.d || 0, o.h || 0, o.n || 0, o.s || 0);
+        },
+
+        _zeroFill = function (num, len) {
+            len = len || 2;
+            return new Array(Math.abs(len - (num + "").length + 1)).join('0') + num;
         },
 
         _dateCreate = function (y, m, d, h, n, s) {

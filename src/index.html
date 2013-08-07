@@ -10,16 +10,30 @@
         }
 
         function strToDate(date,mask) {
-            console.log(DateUtils.strToDate(date,mask));
+            console.log(date,mask,DateUtils.strToDate(date,mask));
+        }
+        function strToObj(date,mask) {
+            console.log(date,mask,DateUtils.strToObj(date,mask));
         }
     </script>
-    <script>
+    <script>/*
         validateFromMask("02/10/2012", "DD/MM/YYYY");
-        validateFromMask("02/10/2012", "dd/mm/yyyy");
+        validateFromMask("02/bb/2012", "dd/mm/yyyy");
         validateFromMask("08/12/2013", "dd/mm/yyyy");
+        validateFromMask("99/88/8233", "dd/mm/yyyy");
+        validateFromMask("99/10/2012", "dd/mm/yyyy");
+*/
 
-        strToDate("02/10/2012", "dd/mm/yyyy");
+        console.log(DateUtils.dateToStr(new Date(2012,5,4,2,3,4), 'dd/mm/yyyy hh:nn:ss'));
+
+        strToObj("02/10/2012", "dd/mm/yyyy");
+        strToObj("02102012", "ddmmyyyy");
+        strToObj("02/10/2012-124112", "dd/mm/yyyy-hhnnss");
+       /* strToDate("02/10/2012 12h34m23s", "dd/mm/yyyy hh:nn:ss");
         strToDate("30/02/2012", "dd/mm/yyyy");
+        strToDate("AA/BB/CCCC", "dd/mm/yyyy");
+*/
+
     </script>
 </head>
 <body>

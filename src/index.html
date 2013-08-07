@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script src="DateUtils.js"></script>
+    <script type="text/javascript">
+        function validateFromMask(date, mask) {
+            var valid  = DateUtils.validateFromMask(date,mask);
+            console.log(date, mask, 'is', valid ? "valid" : "invalid");
+        }
+
+        function strToDate(date,mask) {
+            console.log(DateUtils.strToDate(date,mask));
+        }
+    </script>
+    <script>
+        validateFromMask("02/10/2012", "DD/MM/YYYY");
+        validateFromMask("02/10/2012", "dd/mm/yyyy");
+        validateFromMask("08/12/2013", "dd/mm/yyyy");
+
+        strToDate("02/10/2012", "dd/mm/yyyy");
+        strToDate("30/02/2012", "dd/mm/yyyy");
+    </script>
+</head>
+<body>
+
+</body>
+</html>

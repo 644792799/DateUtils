@@ -1,13 +1,5 @@
 /**
- * Created with JetBrains PhpStorm.
  * User: arnogues
- * Date: 06/12/12
- * Time: 11:22
- *
- * DateUtils for manipulate and validate dates from date masks
- *
- * WORK IN PROGRESS (quick and dirty ideas are written)
- *
  */
 
 
@@ -35,7 +27,7 @@
         dateToStr: function (date, mask) {
             return mask.toLowerCase()
                 .replace(/y+/g, _zeroFill(date.getFullYear()))
-                .replace(/m+/g, _zeroFill(date.getMonth() - 1))
+                .replace(/m+/g, _zeroFill(date.getMonth() + 1))
                 .replace(/d+/g, _zeroFill(date.getDate()))
                 .replace(/h+/g, _zeroFill(date.getHours()))
                 .replace(/n+/g, _zeroFill(date.getMinutes()))

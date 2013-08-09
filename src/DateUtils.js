@@ -6,13 +6,12 @@
 (function () {
     var masks = {
             "fr": "dd/mm/yyyy",
+            "fr-hms": "dd-mm-yyyy hh:nn:ss",
             "en": "mm/dd/yyyy",
-            "frhms": "dd-mm-yyyy hh:nn:ss",
-            "enhms": "mm-dd-yyyy hh:nn:ss"
+            "en-hms": "mm-dd-yyyy hh:nn:ss"
         },
-        shortcutsRe = /([ymdhns])/gi,
-        shortcutsRe2 = /([ymdhns]+)/gi,
         defaultMask = "fr";
+
 
     DateUtils = {
         strToDate: function (str, mask) {
@@ -24,15 +23,17 @@
             return _strToObject(str, mask);
         },
 
-        dateToStr: function (date, mask) {
-            return mask.toLowerCase()
-                .replace(/y+/g, _zeroFill(date.getFullYear()))
-                .replace(/m+/g, _zeroFill(date.getMonth() + 1))
+        dateToStr: function (date, mask, dontgetmask) {
+            if(!dontgetmask) mask = this.getMask(mask);
+            return mask.replace(/y+/g, _zeroFill(date.getFullYear()))
+                .replace(/m+/g, _zeroFill(date.getMonth()+1))
                 .replace(/d+/g, _zeroFill(date.getDate()))
                 .replace(/h+/g, _zeroFill(date.getHours()))
-                .replace(/n+/g, _zeroFill(date.getMinutes()))
-                .replace(/s+/g, _zeroFill(date.getSeconds()));
+                .replace(/m+/g, _zeroFill(date.getMinutes()))
+                .replace(/s+/g, _zeroFill(date.getSeconds()))
+                .replace(/z+/g, _zeroFill(date.getMilliseconds()))
         },
+
         validate: function (y, m, d, h, n, s) {
             h = h || 0;
             n = n || 0;
@@ -77,14 +78,14 @@
         }
     };
 
-
     var _getMask = function (key) {
-            return key ? (masks[key] || key) : (masks[defaultMask] || masks);
+            key=key.toLowerCase();
+            return (key ? (masks[key] || key) : (masks[defaultMask] || masks)).toLowerCase();
         },
 
         _strToObject = function (str, mask) {
             var values = {};
-            _getMask(mask).replace(shortcutsRe, function (a, b, index) {
+            _getMask(mask).replace(/([ymdhns])/gi, function (a, b, index) {
                 values[a] = (values[a] || "") + str.charAt(index);
             });
             return values;
@@ -102,5 +103,4 @@
         _dateCreate = function (y, m, d, h, n, s) {
             return new Date(y, m - 1, d, h, n, s);
         };
-
 })();
